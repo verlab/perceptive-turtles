@@ -1,4 +1,4 @@
-Percive Turtles
+Perceptive Turtles
 =====================
 
 Cooperative perception using turtlebot robots.
