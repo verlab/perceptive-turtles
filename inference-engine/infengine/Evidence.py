@@ -11,9 +11,9 @@ class Evidence:
         :param evidence_state: state of the variable.
         """
         self.x = x
-        selfx.y = y
-        selfx.var = var
+        self.y = y
+        self.var = var
         self.var_states = var_states
-        selfx.evidence_state = evidence_state
+        self.evidence_state = evidence_state
 
 

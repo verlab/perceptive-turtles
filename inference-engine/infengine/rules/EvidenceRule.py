@@ -1,11 +1,10 @@
-
-
 class EvidenceRule:
     """
     This rule triggers with a effect/evidence to infer about an cause when a new evidence appears.
     To apply Bayes rule. CAUSE => EFFECT
     """
-    def __init__(self, cause_var, effect_var, cause_states, effect_states,cause_cprob, effect_cprob):
+
+    def __init__(self, cause_var, effect_var, cause_states, effect_states, cause_cprob, effect_cprob, cause_radio=0.0):
         """
         Construct.
         :param cause_var: cause variable or parent (str)
@@ -14,6 +13,7 @@ class EvidenceRule:
         :param effect_states:  possible states of the effect variable (str[])
         :param cause_cprob: Conditional Probability Table for the cause
         :param effect_cprob: Conditional Probability Table for the effect
+        :param cause_radio: defines a radio to determine that a evidence infer about a near cause.
         """
         self.cause_var = cause_var
         self.effect_var = effect_var
@@ -21,3 +21,4 @@ class EvidenceRule:
         self.effect_states = effect_states
         self.cause_cprob = cause_cprob
         self.effect_cprob = effect_cprob
+        self.cause_radio = cause_radio

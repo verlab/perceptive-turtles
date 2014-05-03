@@ -1,0 +1,7 @@
+----TODO-----
+- Pre-processing evidences to group for similar locations.
+    engine assume that variables are in exactly the same location.
+
+
+
+
