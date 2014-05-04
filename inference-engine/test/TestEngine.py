@@ -10,6 +10,10 @@ fire_sensor_cprob = {
     "['true']": [.7, .3],
     "['false']": [.1, 0.9],
 }
+human_sensor_cprob = {
+    "['true']": [.7, .3],
+    "['false']": [.4, 0.6],
+}
 fire_cprob = [0.05, 0.95]
 human_cprob = [0.2, 0.8]
 
@@ -18,7 +22,7 @@ class TestEngine(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_evidence_rule(self):
+    def rrrtest_evidence_rule(self):
         # Evidence Rules
         erules = []
         er = EvidenceRule("Fire", "Fire_Sensor", ["true", "false"],
@@ -55,21 +59,36 @@ class TestEngine(unittest.TestCase):
         self.assertEqual(len(bn.V), 5, "Error for evidence in the same location")
         self.assertEqual(len(bn.E), 3, "Error for evidence in the same location")
 
+
+    def test_query_rule(self):
+        # Evidence Rules
+        fire_er = EvidenceRule("Fire", "Fire_Sensor", ["true", "false"],
+                               ["true", "false"], fire_cprob, fire_sensor_cprob)
+        human_er = EvidenceRule("Human", "Human_Sensor", ["true", "false"],
+                                ["true", "false"], human_cprob, human_sensor_cprob)
+
+        # Query Rules
+        qr = QueryRule('Human', 'Human in Danger', ["true", "false"], human_cprob, "Fire", ["true", "false"], 10, None)
+
+        # Create engine
+        engine = InferenceEngine([fire_er, human_er], [qr])
+
+
+        ##### EVIDENCE
+        e1 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
+        e2 = Evidence(10, 30, "Human_Sensor", ["true", "false"], "true")
+        #e3 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
+
+        bn, bn_evidences = engine.infer_bn([e1, e2])
+
         print "V: ", bn.V
         print "E: ", bn.E
         print "Evidences: ", bn_evidences
         print "Vertex loc", engine.vertex_locations
 
-
-    def test_query_rule(self):
-        # Evidence Rules
-        erules = []
-        er = EvidenceRule("Fire", "Fire_Sensor", ["true", "false"],
-                          ["true", "false"], fire_cprob, fire_sensor_cprob)
-        erules.append(er)
-        # Query Rules
-        qr = QueryRule('Human', 'Human in Danger', human_cprob, "fire", 10, None)
-
+        # Validate result
+        self.assertEqual(len(bn.V), 6, "Error for query rule")
+        self.assertEqual(len(bn.E), 4, "Error for query rule")
 
 if __name__ == '__main__':
     unittest.main()
