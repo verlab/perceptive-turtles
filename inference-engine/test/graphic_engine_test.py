@@ -56,7 +56,7 @@ window.set_size_request(800, 600)
 
 box = BoxDiscreteBN(window, disc_bn=bn)
 box.evidences = bn_evidences
-box.on_organize(None)
+box.organize_graph(random=False)
 box.set_mode(Mode.run)
 
 window.add(box)
