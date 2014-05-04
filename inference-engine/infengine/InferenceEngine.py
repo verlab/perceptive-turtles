@@ -51,7 +51,7 @@ class InferenceEngine:
 
         # Generate inferred variables based on QUERY rules
         # Apply query rules
-        self._apply_query_rules(disc_bn)
+        self._apply_query_rules(disc_bn, bn_evidences)
 
         # return the created bn
         return disc_bn, bn_evidences
@@ -69,7 +69,7 @@ class InferenceEngine:
                 # If parent has not been created.
                 if not parent_name in self.vertex_locations:
                     ## add to bn
-                    disc_bn.add_vertex(parent_name, erule.cause_var)
+                    disc_bn.add_vertex(parent_name, erule.cause_states)
                     ## position
                     self.vertex_locations[parent_name] = inferred_loc
                     # CPT
@@ -80,19 +80,6 @@ class InferenceEngine:
 
                 # CPT for child
                 disc_bn.set_cprob(evidence_name, erule.effect_cprob)
-
-    def _find_var_in_locations(self, var_name, var_loc):
-        for vertex_name, loc in self.vertex_locations.items():
-            cause_name = "'" + var_name + "'"
-            ## if vertex_name fill in the trigger variable cause name
-            tmp_name = vertex_name[:len(cause_name)]
-            if tmp_name != cause_name:
-                continue
-
-            # validate position
-            if self.vertex_locations[vertex_name] == var_loc:
-                return vertex_name
-        return None
 
     def _find_triggers(self, trig_name):
         triggers = []
@@ -106,7 +93,8 @@ class InferenceEngine:
 
         return triggers
 
-    def _apply_query_rules(self, disc_bn):
+    def _apply_query_rules(self, disc_bn, bn_evidences):
+        # For each query rule
         for k, qr in enumerate(self.query_rules):
             ## TRIGGER if there is a cause variable in this point
             triggers = self._find_triggers(qr.cause_var)
@@ -139,9 +127,14 @@ class InferenceEngine:
                 query_node_name = "'" + qr.query_var + "'q" + str(query_loc)
                 self.vertex_locations[query_node_name] = query_loc
 
-                ## TODO Marginals and joint function
-                ## TODO APPLY function to obtain states and cpt
-                query_cprob = [1.0 / len(qr.query_states)] * len(qr.query_states)
+                ## Marginals and joint function
+                query_marginals = []
+                for qn in query_nodes:
+                    mar = disc_bn.compute_vertex_marginal(qn, bn_evidences)
+                    query_marginals.append(mar)
+
+                ## APPLY joint function to obtain states and cpt
+                query_cprob = qr.query_function(qr.query_states, query_marginals)
 
                 ## add to bn
                 disc_bn.add_vertex(query_node_name, qr.query_states)
