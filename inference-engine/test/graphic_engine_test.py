@@ -47,7 +47,7 @@ e1 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
 e2 = Evidence(10, 30, "Human_Sensor", ["true", "false"], "true")
 
 e3 = Evidence(12, 30, "Fire_Sensor", ["true", "false"], "true")
-bn, bn_evidences = engine.infer_bn([e1, e2, e2, e3, e1])
+bn, bn_evidences = engine.infer_bn([e1, e2, e2, e2, e3, e1])
 
 ###### SHOW
 # Create window
