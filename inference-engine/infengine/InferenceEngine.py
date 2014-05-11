@@ -120,7 +120,7 @@ class InferenceEngine:
                 # TRIGGER If there is not nodes that rule the query.
                 # Then rule does not trigger.
                 if not query_nodes:
-                    return
+                    continue
 
                 ## Create a virtual/query var
                 query_loc = [tx, ty]
