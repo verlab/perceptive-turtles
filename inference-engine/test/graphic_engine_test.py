@@ -3,6 +3,7 @@ from gi.repository import Gtk
 from infengine import joint_functions
 from infengine.Evidence import Evidence
 from infengine.InferenceEngine import InferenceEngine
+from infengine.rules.CommunityRule import CommunityRule
 from infengine.rules.EvidenceRule import EvidenceRule
 from infengine.rules.QueryRule import QueryRule
 from lib_sallybn.disc_bayes_net.BoxDiscreteBN import BoxDiscreteBN, Mode
@@ -44,23 +45,27 @@ human_er = EvidenceRule("Human", "Human_Sensor", ["true", "false"],
 qr = QueryRule('Human', 'Human in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"], 10,
                joint_functions.mean)
 
-cr = QueryRule('Human', 'Person in Community', ["true", "false"], community_cprob, 'Human', ["true", "false"], 10,
+cr = CommunityRule('Human', 'Community', ["true", "false"], 3,
+                   joint_functions.mean)
+
+cdr = QueryRule('Community', 'Community in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"], 10,
                joint_functions.mean)
 
-##TODO community in fire
-
 # Create engine
-engine = InferenceEngine([fire_er, human_er, qr])
+engine = InferenceEngine([fire_er, human_er, qr, cr, cdr])
 
 
 ##### EVIDENCE
 ef1 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
 ef2 = Evidence(19, 30, "Fire_Sensor", ["true", "false"], "false")
 
-eh1 = Evidence(10, 30, "Human_Sensor", ["true", "false"], "true")
-eh2 = Evidence(13, 31, "Human_Sensor", ["true", "false"], "true")
+eh1 = Evidence(0, 10, "Human_Sensor", ["true", "false"], "true")
+eh2 = Evidence(0, 2, "Human_Sensor", ["true", "false"], "false")
+eh3 = Evidence(0, 5, "Human_Sensor", ["true", "false"], "true")
+eh4 = Evidence(0, 7, "Human_Sensor", ["true", "false"], "true")
+eh5 = Evidence(0, 15, "Human_Sensor", ["true", "false"], "true")
 
-bn, bn_evidences = engine.infer_bn([eh1, ef1])
+bn, bn_evidences = engine.infer_bn([ eh2, eh3, eh4,eh1, eh5])
 
 ###### SHOW
 # Create window
