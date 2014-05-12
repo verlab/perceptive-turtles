@@ -1,7 +1,6 @@
 from gi.repository import Gtk
 
 from infengine import joint_functions
-
 from infengine.Evidence import Evidence
 from infengine.InferenceEngine import InferenceEngine
 from infengine.rules.EvidenceRule import EvidenceRule
@@ -27,6 +26,13 @@ human_danger_cprob = {
     "['false', 'false']": [.05, .95]
 }
 
+community_cprob = {
+    "['true', 'true']": [.99, .01],
+    "['true', 'false']": [.01, .99],
+    "['false', 'true']": [.01, .99],
+    "['false', 'false']": [.01, .99]
+}
+
 
 # Evidence Rules
 fire_er = EvidenceRule("Fire", "Fire_Sensor", ["true", "false"],
@@ -38,16 +44,23 @@ human_er = EvidenceRule("Human", "Human_Sensor", ["true", "false"],
 qr = QueryRule('Human', 'Human in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"], 10,
                joint_functions.mean)
 
+cr = QueryRule('Human', 'Person in Community', ["true", "false"], community_cprob, 'Human', ["true", "false"], 10,
+               joint_functions.mean)
+
+##TODO community in fire
+
 # Create engine
-engine = InferenceEngine([fire_er, human_er], [qr])
+engine = InferenceEngine([fire_er, human_er, qr])
 
 
 ##### EVIDENCE
-e1 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
-e2 = Evidence(10, 30, "Human_Sensor", ["true", "false"], "true")
+ef1 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
+ef2 = Evidence(19, 30, "Fire_Sensor", ["true", "false"], "false")
 
-e3 = Evidence(12, 30, "Fire_Sensor", ["true", "false"], "true")
-bn, bn_evidences = engine.infer_bn([e1, e2, e2, e2, e3, e1])
+eh1 = Evidence(10, 30, "Human_Sensor", ["true", "false"], "true")
+eh2 = Evidence(13, 31, "Human_Sensor", ["true", "false"], "true")
+
+bn, bn_evidences = engine.infer_bn([eh1, ef1])
 
 ###### SHOW
 # Create window

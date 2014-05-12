@@ -1,4 +1,8 @@
-class QueryRule:
+import math
+from infengine.rules.Rule import Rule
+
+
+class QueryRule(Rule):
     """
     This rule make a query to infer about a hidden variable.
     """
@@ -23,3 +27,84 @@ class QueryRule:
         self.query_states = query_states
         self.query_range = query_range
         self.query_function = query_function
+
+    def generate_inference(self, disc_bn, evidences, bn_evidences, vertex_locations):
+        """
+
+        :param disc_bn:
+        :param evidences:
+        :param vertex_locations:
+        """
+
+        ## TRIGGER if there is a cause variable in this point
+        triggers = self._find_triggers(self.cause_var, vertex_locations)
+
+        for cause_var in triggers:
+            tx, ty = vertex_locations[cause_var]
+
+            ### query for nodes with name ...
+            query_nodes = []
+            for vname, loc in vertex_locations.items():
+                query_name = "'" + self.query_var + "'"
+                ## if vname fill in the query
+                if not vname[:len(query_name)] == query_name:
+                    continue
+
+                ## if rule the distance
+                p1 = vertex_locations[vname]
+                dist = math.hypot(p1[0] - tx, p1[1] - ty)
+
+                if dist <= self.query_range:
+                    query_nodes.append(vname)
+
+            # TRIGGER If there is not nodes that rule the query.
+            # Then rule does not trigger.
+            if not query_nodes:
+                continue
+
+            ## Create a virtual/query var
+            query_loc = [tx, ty]
+            query_node_name = "'" + self.query_var + "'q" + str(query_loc)
+
+            ## add to bn
+            if not query_node_name in disc_bn.V:
+                ## Marginals and joint function
+                query_marginals = []
+                for qn in query_nodes:
+                    mar = disc_bn.compute_vertex_marginal(qn, bn_evidences)
+                    query_marginals.append(mar)
+
+                ## APPLY joint function to obtain states and cpt
+                query_cprob = self.query_function(self.query_states, query_marginals)
+
+                disc_bn.add_vertex(query_node_name, self.query_states)
+                disc_bn.set_cprob(query_node_name, query_cprob)
+                vertex_locations[query_node_name] = query_loc
+
+            ## Create inferred var
+            inf_var_name = "'" + self.inferred_var + "'" + str(query_loc)
+
+            if not inf_var_name in disc_bn.V:
+                disc_bn.add_vertex(inf_var_name, self.inferred_states)
+
+            # Add edges
+            if not [query_node_name, inf_var_name] in disc_bn.E:
+                disc_bn.add_edge([query_node_name, inf_var_name])
+                disc_bn.add_edge([cause_var, inf_var_name])
+                #CPT
+                disc_bn.set_cprob(inf_var_name, self.inferred_cprob)
+
+    @staticmethod
+    def _find_triggers(trig_name, vertex_locations):
+        triggers = []
+        for vertex_name, loc in vertex_locations.items():
+            cause_name = "'" + trig_name + "'"
+            ## if vertex_name fill in the trigger variable cause name
+            tmp_name = vertex_name[:len(cause_name)]
+
+            if tmp_name == cause_name:
+                triggers.append(vertex_name)
+
+        return triggers
+
+
