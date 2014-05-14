@@ -3,6 +3,7 @@ from gi.repository import Gtk
 from infengine import joint_functions
 from infengine.Evidence import Evidence
 from infengine.InferenceEngine import InferenceEngine
+from infengine.gis import shape_writer
 from infengine.rules.CommunityRule import CommunityRule
 from infengine.rules.EvidenceRule import EvidenceRule
 from infengine.rules.QueryRule import QueryRule
@@ -45,11 +46,11 @@ human_er = EvidenceRule("Human", "Human_Sensor", ["true", "false"],
 qr = QueryRule('Human', 'Human in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"], 10,
                joint_functions.mean)
 
-cr = CommunityRule('Human', 'Community', ["true", "false"], 3,
+cr = CommunityRule('Human', 'C', ["true", "false"], 3,
                    joint_functions.mean)
 
-cdr = QueryRule('Community', 'Community in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"], 10,
-               joint_functions.mean)
+cdr = QueryRule('C', 'Community in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"], 10,
+                joint_functions.mean)
 
 # Create engine
 engine = InferenceEngine([fire_er, human_er, qr, cr, cdr])
@@ -59,13 +60,16 @@ engine = InferenceEngine([fire_er, human_er, qr, cr, cdr])
 ef1 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
 ef2 = Evidence(19, 30, "Fire_Sensor", ["true", "false"], "false")
 
-eh1 = Evidence(0, 10, "Human_Sensor", ["true", "false"], "true")
-eh2 = Evidence(0, 2, "Human_Sensor", ["true", "false"], "false")
-eh3 = Evidence(0, 5, "Human_Sensor", ["true", "false"], "true")
-eh4 = Evidence(0, 7, "Human_Sensor", ["true", "false"], "true")
-eh5 = Evidence(0, 15, "Human_Sensor", ["true", "false"], "true")
+eh1 = Evidence(-124.4577, 48.0135, "Human_Sensor", ["true", "false"], "true")
+eh2 = Evidence(-124.4577, 58.0135, "Human_Sensor", ["true", "false"], "false")
+eh3 = Evidence(-124.4577, 68.0135, "Human_Sensor", ["true", "false"], "true")
+eh4 = Evidence(-124.4577, 88.0135, "Human_Sensor", ["true", "false"], "true")
+eh5 = Evidence(-124.4577, 108.0135, "Human_Sensor", ["true", "false"], "true")
 
-bn, bn_evidences = engine.infer_bn([ eh2, eh3, eh4,eh1, eh5])
+bn, bn_evidences = engine.infer_bn([eh2, eh3, eh4, eh1, eh5, ])
+
+shape_writer.write(bn, engine.vertex_locations)
+
 
 ###### SHOW
 # Create window
