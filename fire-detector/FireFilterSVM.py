@@ -1,21 +1,17 @@
 import cv2
 import numpy as np
 
-class StatModel(object):
-	'''parent class - starting point to add abstraction'''
-	def load(self, fn):
-		self.model.load(fn)
-	def save(self, fn):
-		self.model.save(fn)
-
-class SVM(StatModel):
-	'''wrapper for OpenCV SimpleVectorMachine algorithm'''
+class SVM(object):
 	def __init__(self):
 		self.model = cv2.SVM()
 
-	def train(self, samples, responses):
-		#setting algorithm parameters
+	def load(self, fn):
+		self.model.load(fn)
 
+	def save(self, fn):
+		self.model.save(fn)
+
+	def train(self, samples, responses):
 		params = dict( kernel_type = cv2.SVM_LINEAR,
 									 svm_type = cv2.SVM_C_SVC,
 									 C = 1 )
@@ -75,9 +71,6 @@ def test_image(svm, img, window_size):
 	return output
 
 def run():
-
-	# samples = np.array(np.random.random((4,2)), dtype = np.float32)
-	# y_train = np.array([1.,0.,0.,1.], dtype = np.float32)
 
 	window_size = 5
 	# texture_folder = "img/textures/"
