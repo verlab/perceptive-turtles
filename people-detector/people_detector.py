@@ -19,6 +19,13 @@ class Detector(object):
 
   def quadfy_image(self, img):
     rows, cols = img.shape[0], img.shape[1]
+
+    if rows % 2 != 0:
+      img = np.delete( img, img.shape[0] - 1, 0 )
+    if cols % 2 != 0:
+      img = np.delete( img, img.shape[1] - 1, 1 )
+
+    rows, cols = img.shape[0], img.shape[1]
     quad_dim = max(rows, cols)
 
     quad = np.zeros( shape = ( quad_dim, quad_dim, 3 ), dtype = img.dtype )

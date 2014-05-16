@@ -5,7 +5,7 @@ import numpy as np
 def run():
 	detector = people_detector.Detector()
 
-	frame = cv2.imread("photo_1.png")
+	frame = cv2.imread("photo_0.png")
 
 	output = detector.test_image_rotate( frame, 30 )
 
