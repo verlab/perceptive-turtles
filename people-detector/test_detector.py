@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 def run():
-	detector = people_detector.Detector()
+	detector = people_detector.PeopleDetector()
 
 	frame = cv2.imread("photo_0.png")
 
