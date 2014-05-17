@@ -2,9 +2,12 @@ import ogr
 import os
 
 
-def write(disc_bn, vertex_locs):
+def write(disc_bn, vertex_locs, evidences):
     layers = {}
     vertices = disc_bn.V
+
+    # Compute maginal probabilities
+    marginals = disc_bn.compute_marginals(evidences)
 
     for v in vertices:
         try:
@@ -30,6 +33,13 @@ def write(disc_bn, vertex_locs):
             new_field = ogr.FieldDefn('name', ogr.OFTString)
             layer.CreateField(new_field)
 
+            # Create fields for each state
+            states = disc_bn.get_states(v)
+            for s in states:
+                # Create field in layer
+                field_state = ogr.FieldDefn(s, ogr.OFTReal)
+                layer.CreateField(field_state)
+
             # save layer
             layers[var_name] = layer
         else:
@@ -53,6 +63,14 @@ def write(disc_bn, vertex_locs):
         feature.SetGeometry(point)
         # variable name
         feature.SetField('name', v)
+
+        ## Set probs
+        states = disc_bn.get_states(v)
+
+        for s in states:
+            print marginals[v][s]
+            feature.SetField(s, marginals[v][s])
+
         # add the new feature to the layer
         layer.CreateFeature(feature)
 
