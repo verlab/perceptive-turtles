@@ -1,82 +1,120 @@
-import cv2
 import numpy as np
 
-class Detector(object):
+import cv2
 
-  IMAGE_OUTPUT = 1
-  BOOLEAN_OUTPUT = 2
-  DEFAULT_DEGREE = 30
 
-  def __init__(self):
-    self.hog = cv2.HOGDescriptor()
-    self.hog.setSVMDetector( cv2.HOGDescriptor_getDefaultPeopleDetector() )
+class PeopleDetector(object):
+    """
+    Detector for people.
+    """
+    IMAGE_OUTPUT = 1
+    BOOLEAN_OUTPUT = 2
+    DEFAULT_DEGREE = 30
 
-  def inside(self, r, q):
-    rx, ry, rw, rh = r
-    qx, qy, qw, qh = q
-    return rx > qx and ry > qy and rx + rw < qx + qw and ry + rh < qy + qh
+    def __init__(self):
+        self.hog = cv2.HOGDescriptor()
+        self.hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
-  def draw_detections(self, img, rects, thickness = 1):
-    for x, y, w, h in rects:
-        pad_w, pad_h = int(0.15*w), int(0.05*h)
-        cv2.rectangle(img, (x+pad_w, y+pad_h), (x+w-pad_w, y+h-pad_h), (0, 255, 0), thickness)
+    def inside(self, r, q):
+        rx, ry, rw, rh = r
+        qx, qy, qw, qh = q
+        return rx > qx and ry > qy and rx + rw < qx + qw and ry + rh < qy + qh
 
-  def quadfy_image(self, img):
-    rows, cols = img.shape[0], img.shape[1]
+    @staticmethod
+    def draw_detections(img, rects, thickness=1):
+        for x, y, w, h in rects:
+            pad_w, pad_h = int(0.15 * w), int(0.05 * h)
+            x = int(x)
+            y = int(y)
+            cv2.rectangle(img, (x + pad_w, y + pad_h), (x + w - pad_w, y + h - pad_h), (0, 255, 0), thickness)
 
-    if rows % 2 != 0:
-      img = np.delete( img, img.shape[0] - 1, 0 )
-    if cols % 2 != 0:
-      img = np.delete( img, img.shape[1] - 1, 1 )
+    @staticmethod
+    def quadfy_image(img):
+        """
+        Put  a rotated image in a bigger frame.
+        :param img:
+        :return:
+        """
+        rows, cols = img.shape[0], img.shape[1]
 
-    rows, cols = img.shape[0], img.shape[1]
-    quad_dim = max(rows, cols)
+        # It it can be divided by 2, eliminate the last column or row
+        if rows % 2 != 0:
+            img = np.delete(img, img.shape[0] - 1, 0)
+        if cols % 2 != 0:
+            img = np.delete(img, img.shape[1] - 1, 1)
 
-    quad = np.zeros( shape = ( quad_dim, quad_dim, 3 ), dtype = img.dtype )
+        # New size
+        rows, cols = img.shape[0], img.shape[1]
 
-    quad[ ((quad_dim / 2) - rows / 2):((quad_dim / 2) + rows / 2), ((quad_dim / 2) - cols / 2):((quad_dim / 2) + cols / 2) ] = img
+        # Create the new big frame
+        quad_dim = max(rows, cols)
+        quad = np.zeros(shape=(quad_dim, quad_dim, 3), dtype=img.dtype)
 
-    return quad
+        quad[((quad_dim / 2) - rows / 2):((quad_dim / 2) + rows / 2),
+        ((quad_dim / 2) - cols / 2):((quad_dim / 2) + cols / 2)] = img
 
-  def rotate_image(self, img, degree = DEFAULT_DEGREE):
-    source_image = self.quadfy_image( img )
+        return quad
 
-    image_list = [source_image]
-    rows, cols = source_image.shape[0], source_image.shape[1]
+    def rotate_image(self, img, degree=DEFAULT_DEGREE):
+        """
+        Put the image in a bigger frame and rotate it
+        :param img: image to rotate
+        :param degree: delta angle for rotations
+        :return: rotated list of tuples of images in a bigger box along with the angle.
+        """
+        # Put the image in a new bigger frame
+        source_image = self.quadfy_image(img)
 
-    for rotate_degree in xrange(degree, 359, degree):
-      rotate_matrix = cv2.getRotationMatrix2D( (cols/2,rows/2), rotate_degree, 1 )
-      dst = cv2.warpAffine( source_image, rotate_matrix, (cols,rows) )
+        image_list = []
+        rows, cols = source_image.shape[0], source_image.shape[1]
 
-      image_list.append( dst )
+        for rotate_degree in xrange(0, 359, degree):
+            # Rotation matrix
+            rotation_matrix = cv2.getRotationMatrix2D((cols / 2, rows / 2), rotate_degree, 1)
+            # Rotate the image
+            dst = cv2.warpAffine(source_image, rotation_matrix, (cols, rows))
 
-    return image_list
+            image_list.append((dst, rotation_matrix))
 
-  def test_image_rotate_list(self, img, degree = DEFAULT_DEGREE):
+        return image_list
 
-    image_list = self.rotate_image(img, degree)
 
-    image_list_out = []
-    for idx, image in enumerate(image_list):
-      image_list_out.append( self.test_image(image) )
+    def detect(self, img, degree=DEFAULT_DEGREE):
+        """
+        Detect people in the image.
+        :param img: source image
+        :param degree: delta angle for rotations.
+        """
+        # Rotate image
+        image_list = self.rotate_image(img, degree)
 
-    return image_list_out
+        rows, cols = img.shape[0], img.shape[1]
 
-  def test_image(self, img, output = IMAGE_OUTPUT):
+        detected_points = []
+        # For each rotated image
+        for image, rotation_matrix in image_list:
+            # Run HOG
+            detected_rectangles, w = self.hog.detectMultiScale(image,
+                                                               winStride=(8, 8), padding=(32, 32), scale=1.05)
+            # For each detected person
+            for x, y, w, h in detected_rectangles:
+                px = x + w / 2
+                py = y + h / 2
 
-    found, w = self.hog.detectMultiScale(img, winStride=(8,8), padding=(32,32), scale=1.05)
-    self.draw_detections(img, found, 2)
+                # transform
+                inv_mat = cv2.invertAffineTransform(rotation_matrix)
+                # transformed_point
+                tp = inv_mat.dot(np.array([px, py, 1]))
 
-    if output == self.IMAGE_OUTPUT:
-      return img
-    elif output == self.BOOLEAN_OUTPUT:
-      return  np.array(found).any()
+                ## adjust center
+                r_rows, r_cols = image.shape[0], image.shape[1]
+                diff_cx = (r_cols - cols) / 2.0
+                diff_cy = (r_rows - rows) / 2.0
+                tp[0] -= diff_cx
+                tp[1] -= diff_cy
 
-  def has_person(self, img, degree = DEFAULT_DEGREE):
-    image_list = self.rotate_image( img, degree )
 
-    for idx, image in enumerate(image_list):
-      if self.test_image(image, self.BOOLEAN_OUTPUT):
-        return True
+                # Add to the list
+                detected_points.append(tp.tolist())
 
-    return False
+        return detected_points

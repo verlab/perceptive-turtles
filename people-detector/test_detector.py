@@ -1,19 +1,25 @@
-import people_detector
 import cv2
-import numpy as np
+
+from people_detector import PeopleDetector
+
 
 def run():
-	detector = people_detector.Detector()
+    detector = PeopleDetector()
 
-	frame = cv2.imread("photo_0.png")
+    frame = cv2.imread("photo_0.png")
 
-	output = detector.test_image_rotate_list( frame )
+    detected_points = detector.detect(frame)
 
-	# print detector.has_person( frame )
+    # Extend to rectangle
+    for p in detected_points:
+        p.append(10)
+        p.append(10)
 
-	for idx, image in enumerate(output):
-		cv2.imshow("test", image)
-		cv2.waitKey(0)
+    PeopleDetector.draw_detections(frame, detected_points, 3)
+    cv2.imshow("test", frame)
+    cv2.waitKey(0)
+
 
 if __name__ == "__main__":
-	run()
+    run()
+
