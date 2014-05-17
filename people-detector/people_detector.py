@@ -79,9 +79,10 @@ class PeopleDetector(object):
         return image_list
 
 
-    def detect(self, img, degree=DEFAULT_DEGREE):
+    def detect(self, img, degree=DEFAULT_DEGREE, debug=False):
         """
         Detect people in the image.
+        :param debug: show each rotated image and press to continue
         :param img: source image
         :param degree: delta angle for rotations.
         """
@@ -96,6 +97,12 @@ class PeopleDetector(object):
             # Run HOG
             detected_rectangles, w = self.hog.detectMultiScale(image,
                                                                winStride=(8, 8), padding=(32, 32), scale=1.05)
+
+            if debug:
+                self.draw_detections(image, detected_rectangles)
+                cv2.imshow("test", image)
+                cv2.waitKey(0)
+
             # For each detected person
             for x, y, w, h in detected_rectangles:
                 px = x + w / 2
