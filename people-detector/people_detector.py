@@ -3,6 +3,10 @@ import numpy as np
 
 class Detector(object):
 
+  IMAGE_OUTPUT = 1
+  BOOLEAN_OUTPUT = 2
+  DEFAULT_DEGREE = 30
+
   def __init__(self):
     self.hog = cv2.HOGDescriptor()
     self.hog.setSVMDetector( cv2.HOGDescriptor_getDefaultPeopleDetector() )
@@ -34,8 +38,7 @@ class Detector(object):
 
     return quad
 
-  def test_image_rotate(self, img, degree = 45):
-
+  def rotate_image(self, img, degree = DEFAULT_DEGREE):
     source_image = self.quadfy_image( img )
 
     image_list = [source_image]
@@ -47,14 +50,33 @@ class Detector(object):
 
       image_list.append( dst )
 
+    return image_list
+
+  def test_image_rotate_list(self, img, degree = DEFAULT_DEGREE):
+
+    image_list = self.rotate_image(img, degree)
+
     image_list_out = []
     for idx, image in enumerate(image_list):
       image_list_out.append( self.test_image(image) )
 
     return image_list_out
 
-  def test_image(self, img):
-    found, w = self.hog.detectMultiScale(img, winStride=(8,8), padding=(32,32), scale=1.05)
-    self.draw_detections(img, found, 3)
+  def test_image(self, img, output = IMAGE_OUTPUT):
 
-    return img
+    found, w = self.hog.detectMultiScale(img, winStride=(8,8), padding=(32,32), scale=1.05)
+    self.draw_detections(img, found, 2)
+
+    if output == self.IMAGE_OUTPUT:
+      return img
+    elif output == self.BOOLEAN_OUTPUT:
+      return  np.array(found).any()
+
+  def has_person(self, img, degree = DEFAULT_DEGREE):
+    image_list = self.rotate_image( img, degree )
+
+    for idx, image in enumerate(image_list):
+      if self.test_image(image, self.BOOLEAN_OUTPUT):
+        return True
+
+    return False

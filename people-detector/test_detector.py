@@ -7,7 +7,9 @@ def run():
 
 	frame = cv2.imread("photo_0.png")
 
-	output = detector.test_image_rotate( frame, 30 )
+	output = detector.test_image_rotate_list( frame )
+
+	# print detector.has_person( frame )
 
 	for idx, image in enumerate(output):
 		cv2.imshow("test", image)
