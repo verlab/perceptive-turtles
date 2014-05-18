@@ -2,7 +2,7 @@ import ogr
 import os
 
 
-def write(disc_bn, vertex_locs, evidences):
+def write(disc_bn, vertex_locs, evidences, output_folder='output_shapes'):
     layers = {}
     vertices = disc_bn.V
 
@@ -20,7 +20,7 @@ def write(disc_bn, vertex_locs, evidences):
         if not var_name in layers:
             # Create the output shapefile
             # layer = _create_layer(var_name)
-            outSHPfn = '../shapes/' + var_name + '.shp'
+            outSHPfn = output_folder + '/' + var_name + '.shp'
 
             # Create the output shapefile
             shpDriver = ogr.GetDriverByName("ESRI Shapefile")
@@ -68,7 +68,7 @@ def write(disc_bn, vertex_locs, evidences):
         states = disc_bn.get_states(v)
 
         for s in states:
-            print marginals[v][s]
+            # print marginals[v][s]
             feature.SetField(s, marginals[v][s])
 
         # add the new feature to the layer

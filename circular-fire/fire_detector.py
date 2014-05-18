@@ -27,7 +27,7 @@ class CircleFireDetector(object):
 
         found_list = []
 
-        if circles != None:
+        if circles is not None:
             circles = np.uint16(np.around(circles))
             circles = circles[0]
             roi_list = []
