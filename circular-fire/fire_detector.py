@@ -2,7 +2,6 @@ import numpy as np
 
 import cv2
 
-
 class CircleFireDetector(object):
     """
     Detect circular paper simulating fire.
@@ -24,8 +23,7 @@ class CircleFireDetector(object):
         source_blur = cv2.medianBlur(source_gray, 7)
         source_hsv = cv2.cvtColor(source, cv2.COLOR_BGR2HSV)
 
-        circles = cv2.HoughCircles(source_blur, cv2.cv.CV_HOUGH_GRADIENT, 1, 20, param1=50, param2=30, minRadius=10,
-                                   maxRadius=50)
+        circles = cv2.HoughCircles(source_blur, cv2.HOUGH_GRADIENT, 1, 20, param1=50, param2=30, minRadius=10, maxRadius=50)
 
         found_list = []
 
@@ -42,14 +40,14 @@ class CircleFireDetector(object):
                 roi = np.array(source_hsv[x1:x1 + size, y1:y1 + size])
                 roi_list.append((roi, (mark[0], mark[1])))
 
-        for roi, position in roi_list:
-            if not (roi.shape[0] and roi.shape[1]):
-                continue
+            for roi, position in roi_list:
+                if not (roi.shape[0] and roi.shape[1]):
+                    continue
 
-            mask = cv2.inRange(roi, self.LOWER_BOUND, self.UPPER_BOUND)
-            avg = np.average(mask)
+                mask = cv2.inRange(roi, self.LOWER_BOUND, self.UPPER_BOUND)
+                avg = np.average(mask)
 
-            if avg > (255 * 0.8):
-                found_list.append(position)
+                if avg > (255 * 0.8):
+                    found_list.append(position)
 
         return found_list
