@@ -2,7 +2,6 @@ import cv2
 
 from fire_detector import CircleFireDetector
 
-
 def run():
     detector = CircleFireDetector()
 
