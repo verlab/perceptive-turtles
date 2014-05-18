@@ -74,19 +74,19 @@ shape_writer.write(bn, engine.vertex_locations, bn_evidences)
 
 ###### SHOW
 # Create window
-# window = Gtk.Window()
-# window.set_size_request(800, 600)
-#
-# box = BoxDiscreteBN(window, disc_bn=bn)
-# box.evidences = bn_evidences
-# box.organize_graph(random=False)
-# box.set_mode(Mode.run)
-#
-# window.add(box)
-# window.show_all()
-#
-# window.connect("delete-event", Gtk.main_quit)
-# Gtk.main()
+window = Gtk.Window()
+window.set_size_request(800, 600)
+
+box = BoxDiscreteBN(window, disc_bn=bn)
+box.evidences = bn_evidences
+box.organize_graph(random=False)
+box.set_mode(Mode.run)
+
+window.add(box)
+window.show_all()
+
+window.connect("delete-event", Gtk.main_quit)
+Gtk.main()
 
 
 

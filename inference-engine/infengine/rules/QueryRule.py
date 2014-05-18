@@ -86,6 +86,7 @@ class QueryRule(Rule):
 
             if not inf_var_name in disc_bn.V:
                 disc_bn.add_vertex(inf_var_name, self.inferred_states)
+                vertex_locations[inf_var_name] = query_loc
 
             # Add edges
             if not [query_node_name, inf_var_name] in disc_bn.E:
