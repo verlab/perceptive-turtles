@@ -23,7 +23,10 @@ class CircleFireDetector(object):
         source_blur = cv2.medianBlur(source_gray, 7)
         source_hsv = cv2.cvtColor(source, cv2.COLOR_BGR2HSV)
 
-        circles = cv2.HoughCircles(source_blur, cv2.HOUGH_GRADIENT, 1, 20, param1=50, param2=30, minRadius=10, maxRadius=50)
+        hg = 3  #cv2.HOUGH_GRADIENT || cv2.cv.CV_HOUGH_GRADIENT
+        circles = cv2.HoughCircles(source_blur, hg, 1, 20, param1=50, param2=30, minRadius=10, maxRadius=50)
+
+
 
         found_list = []
 
