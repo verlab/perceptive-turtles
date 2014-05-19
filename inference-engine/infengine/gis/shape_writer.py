@@ -1,19 +1,24 @@
 import ogr
 import os
+import logging
 
+logger = logging.getLogger(__name__)
+
+# Create the output shapefile
+shpDriver = ogr.GetDriverByName("ESRI Shapefile")
 
 def write(disc_bn, vertex_locs, evidences, output_folder='output_shapes'):
     layers = {}
     vertices = disc_bn.V
-
     # Compute maginal probabilities
     marginals = disc_bn.compute_marginals(evidences)
 
     for v in vertices:
+        logger.debug("writing shape for vertex %s", v)
         try:
             var_name = v.split("'")[1]
         except Exception:
-            print v, " could not be parsed",
+            logger.error("%s, name could not be parsed", v)
 
         # get or create a layer
         layer = None
@@ -23,7 +28,7 @@ def write(disc_bn, vertex_locs, evidences, output_folder='output_shapes'):
             outSHPfn = output_folder + '/' + var_name + '.shp'
 
             # Create the output shapefile
-            shpDriver = ogr.GetDriverByName("ESRI Shapefile")
+            # shpDriver = ogr.GetDriverByName("ESRI Shapefile")
             if os.path.exists(outSHPfn):
                 shpDriver.DeleteDataSource(outSHPfn)
             outDataSource = shpDriver.CreateDataSource(outSHPfn)
@@ -78,8 +83,6 @@ def write(disc_bn, vertex_locs, evidences, output_folder='output_shapes'):
 def _create_layer(var_name):
     outSHPfn = var_name + '.shp'
 
-    # Create the output shapefile
-    shpDriver = ogr.GetDriverByName("ESRI Shapefile")
     if os.path.exists(outSHPfn):
         shpDriver.DeleteDataSource(outSHPfn)
     outDataSource = shpDriver.CreateDataSource(outSHPfn)
