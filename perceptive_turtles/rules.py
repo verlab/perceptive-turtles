@@ -13,8 +13,8 @@ def get_rules():
         "['false']": [.1, 0.9],
     }
     human_sensor_cprob = {
-        "['true']": [.7, .3],
-        "['false']": [.4, 0.6],
+        "['true']": [.55, .45],
+        "['false']": [.3, 0.7],
     }
     fire_cprob = [0.4, 0.6]
     human_cprob = [0.3, 0.7]

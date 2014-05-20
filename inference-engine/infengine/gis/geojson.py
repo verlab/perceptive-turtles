@@ -50,15 +50,36 @@ def write(disc_bn, vertex_locs, evidences, output_folder='output_shapes'):
         layer["features"].append(feature)
 
     # write
-    for var_name, dic in layers.items():
+    for var_name, layer in layers.items():
         outSHPfn = output_folder + '/' + var_name + '.json'
         if os.path.exists(outSHPfn):
                 os.remove(outSHPfn)
 
         with open(outSHPfn, 'w') as outfile:
-            json.dump(dic, outfile)
+            json.dump(layer, outfile)
 
 
 
 
 
+def layer_points(points, output_path):
+    #### Write layer
+    # Create layer
+    layer = {
+        "type": "FeatureCollection",
+        "features": []
+    }
+
+    for p in points:
+
+        feature = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": p},
+                "properties": {"name": p}
+            }
+        layer["features"].append(feature)
+
+    with open(output_path, 'w') as outfile:
+        json.dump(layer, outfile)
