@@ -1,4 +1,5 @@
 from infengine import joint_functions
+from infengine.rules.AffinityRule import AffinityRule
 from infengine.rules.CommunityRule import CommunityRule
 from infengine.rules.EvidenceRule import EvidenceRule
 from infengine.rules.QueryRule import QueryRule
@@ -36,7 +37,7 @@ def get_rules():
     # Evidence Rules
     fire_er = EvidenceRule("Fire", "Fire_Sensor", ["true", "false"],
                            ["true", "false"], fire_cprob, fire_sensor_cprob)
-    human_er = EvidenceRule("Human", "Human_Sensor", ["true", "false"],
+    human_er = AffinityRule("Human", "Human_Sensor", ["true", "false"],
                             ["true", "false"], human_cprob, human_sensor_cprob)
 
     # Query Rules
@@ -50,4 +51,4 @@ def get_rules():
                     10,
                     joint_functions.mean)
 
-    return [fire_er, human_er, qr, cr, cdr]
+    return [fire_er, human_er]#, qr, cr, cdr]
