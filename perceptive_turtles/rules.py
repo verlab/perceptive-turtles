@@ -10,12 +10,12 @@ HUMAN_RADIO = 0.0000270102934607296824302997972910844737270963378250598907470703
 
 def get_rules():
     fire_sensor_cprob = {
-        "['true']": [.7, .3],
-        "['false']": [.1, 0.9],
-    }
-    human_sensor_cprob = {
         "['true']": [.86, .14],
         "['false']": [.001, 0.999],
+    }
+    human_sensor_cprob = {
+        "['true']": [.36, .64],
+        "['false']": [.07, 0.93],
     }
     fire_cprob = [0.4, 0.6]
     human_cprob = [0.3, 0.7]
