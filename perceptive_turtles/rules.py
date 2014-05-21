@@ -5,6 +5,7 @@ from infengine.rules.EvidenceRule import EvidenceRule
 from infengine.rules.QueryRule import QueryRule
 
 COMMUNITY_RADIO = 0.000018006862307153121620199864860722982484730891883373260498046875
+HUMAN_RADIO = 0.0000270102934607296824302997972910844737270963378250598907470703125000
 
 
 def get_rules():
@@ -13,8 +14,8 @@ def get_rules():
         "['false']": [.1, 0.9],
     }
     human_sensor_cprob = {
-        "['true']": [.55, .45],
-        "['false']": [.3, 0.7],
+        "['true']": [.86, .14],
+        "['false']": [.001, 0.999],
     }
     fire_cprob = [0.4, 0.6]
     human_cprob = [0.3, 0.7]
@@ -35,13 +36,14 @@ def get_rules():
 
 
     # Evidence Rules
-    fire_er = EvidenceRule("Fire", "Fire_Sensor", ["true", "false"],
+    fire_er = AffinityRule("Fire", "Fire_Sensor", ["true", "false"],
                            ["true", "false"], fire_cprob, fire_sensor_cprob)
     human_er = AffinityRule("Human", "Human_Sensor", ["true", "false"],
                             ["true", "false"], human_cprob, human_sensor_cprob)
 
     # Query Rules
-    qr = QueryRule('Human', 'Human in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"], 10,
+    qr = QueryRule('Human', 'Human in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"],
+                   HUMAN_RADIO,
                    joint_functions.mean)
 
     cr = CommunityRule('Human', 'Community', ["true", "false"], COMMUNITY_RADIO,
@@ -51,4 +53,4 @@ def get_rules():
                     10,
                     joint_functions.mean)
 
-    return [fire_er, human_er]#, qr, cr, cdr]
+    return [fire_er, human_er,  qr, cr, cdr]
