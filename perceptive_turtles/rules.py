@@ -36,10 +36,10 @@ def get_rules():
 
 
     # Evidence Rules
-    fire_er = AffinityRule("Fire", "Fire_Sensor", ["true", "false"],
+    fire_er = EvidenceRule("Fire", "Fire_Sensor", ["true", "false"],
                            ["true", "false"], fire_cprob, fire_sensor_cprob)
     human_er = AffinityRule("Human", "Human_Sensor", ["true", "false"],
-                            ["true", "false"], human_cprob, human_sensor_cprob)
+                            ["true", "false"], human_cprob, human_sensor_cprob, min_members=4)
 
     # Query Rules
     qr = QueryRule('Human', 'Human in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"],

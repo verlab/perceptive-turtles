@@ -10,9 +10,11 @@ class AffinityRule(Rule):
     Rule that cluster the evidences to infer about a hidden variable.
     """
 
-    def __init__(self, cause_var, effect_var, cause_states, effect_states, cause_cprob, effect_cprob, cause_radio=0.0):
+    def __init__(self, cause_var, effect_var, cause_states, effect_states, cause_cprob, effect_cprob, cause_radio=0.0,
+                 min_members=1):
         """
         Construct.
+        :param min_members: minimum number to create an inference
         :param cause_var: cause variable or parent (str) (hidden variable).
         :param effect_var: effect variable (str) ----> TRIGGER.
         :param cause_states: possible states of the cause variable (str[])
@@ -21,6 +23,7 @@ class AffinityRule(Rule):
         :param effect_cprob: Conditional Probability Table for the effect
         :param cause_radio: defines a radio to determine that a evidence infer about a near cause.
         """
+        self.min_members = min_members
         self.cause_var = cause_var
         self.effect_var = effect_var
         self.cause_states = cause_states
@@ -56,11 +59,16 @@ class AffinityRule(Rule):
         n_clusters_ = len(cluster_centers_indices)
         labels = af.labels_
 
+        # For each cluster
         for k in range(n_clusters_):
             class_members = labels == k
             # Inferred location
             inferred_loc = trigger_evidences[cluster_centers_indices[k]].x, trigger_evidences[
                 cluster_centers_indices[k]].y
+
+            # if does not fill the minimum members
+            if sum(class_members) < self.min_members:
+                continue
 
             ## create a new parent variable
             parent_name = "'" + self.cause_var + "'" + str(inferred_loc)
