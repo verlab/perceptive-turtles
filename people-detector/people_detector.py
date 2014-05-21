@@ -79,12 +79,13 @@ class PeopleDetector(object):
         return image_list
 
 
-    def detect(self, img, degree=DEFAULT_DEGREE, debug=False):
+    def detect(self, img, degree=DEFAULT_DEGREE, debug=False, min_size=150):
         """
         Detect people in the image.
         :param debug: show each rotated image and press to continue
         :param img: source image
         :param degree: delta angle for rotations.
+        :param min_size: minimum height in pixels for a person
         """
         # Rotate image
         image_list = self.rotate_image(img, degree)
@@ -107,6 +108,10 @@ class PeopleDetector(object):
             for x, y, w, h in detected_rectangles:
                 px = x + w / 2
                 py = y + h / 2
+
+                # WARNING: size of the person is known a priori
+                if w < min_size:
+                    continue
 
                 # transform
                 inv_mat = cv2.invertAffineTransform(rotation_matrix)
