@@ -28,7 +28,7 @@ class InferenceEngine:
         #
         self.vertex_locations = {}
 
-        new_nodes = False
+        new_nodes = True
 
         # Generate inferred variables based on evidence rules
         for i, e in enumerate(evidences):

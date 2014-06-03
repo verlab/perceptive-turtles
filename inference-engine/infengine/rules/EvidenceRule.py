@@ -35,6 +35,10 @@ class EvidenceRule(Rule):
         """
         # Generate inferred variables based on evidence rules
         for i, e in enumerate(evidences):
+            # this evidence is not our interest.
+            if e.var != self.effect_var:
+                continue
+
             # vertex location in map.
             evidence_location = [e.x, e.y]
 
@@ -42,25 +46,25 @@ class EvidenceRule(Rule):
             evidence_name = "'" + e.var + "'" + str(evidence_location) + "_" + str(i)
 
             ##### TRIGGER if evidence is equals to effect variable in rule.
-            if e.var == self.effect_var:
-                # Inferred location
-                inferred_loc = evidence_location
 
-                ## create a new parent variable
-                parent_name = "'" + self.cause_var + "'" + str(inferred_loc)  #+ "_" + str(i) + "-" + str(j)
+            # Inferred location
+            inferred_loc = evidence_location
 
-                # If parent has not been created.
-                if not parent_name in disc_bn.V:
-                    ## add to bn
-                    disc_bn.add_vertex(parent_name, self.cause_states)
-                    ## position
-                    vertex_locations[parent_name] = inferred_loc
-                    # CPT
-                    disc_bn.set_cprob(parent_name, self.cause_cprob)
+            ## create a new parent variable
+            parent_name = "'" + self.cause_var + "'" + str(inferred_loc)
 
-                # If the new edge has not been created before
-                if not [parent_name, evidence_name] in disc_bn.E:
-                    disc_bn.add_edge([parent_name, evidence_name])
+            # If parent has not been created.
+            if not parent_name in disc_bn.V:
+                ## add to bn
+                disc_bn.add_vertex(parent_name, self.cause_states)
+                ## position
+                vertex_locations[parent_name] = inferred_loc
+                # CPT
+                disc_bn.set_cprob(parent_name, self.cause_cprob)
 
-                    # CPT for child
-                    disc_bn.set_cprob(evidence_name, self.effect_cprob)
+            # If the new edge has not been created before
+            if not [parent_name, evidence_name] in disc_bn.E:
+                disc_bn.add_edge([parent_name, evidence_name])
+
+                # CPT for child
+                disc_bn.set_cprob(evidence_name, self.effect_cprob)
