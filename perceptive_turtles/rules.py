@@ -22,9 +22,9 @@ def get_rules():
 
     human_danger_cprob = {
         "['true', 'true']": [.9, .1],
-        "['true', 'false']": [.2, .8],
-        "['false', 'true']": [.1, .9],
-        "['false', 'false']": [.05, .95]
+        "['true', 'false']": [.01, .99],
+        "['false', 'true']": [.01, .99],
+        "['false', 'false']": [.001, .999]
     }
 
     community_cprob = {

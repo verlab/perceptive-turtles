@@ -26,7 +26,7 @@ ROTATION_ANGLE_PEOPLE = 30
 
 BOOLEAN_STATES = ["true", "false"]
 
-debug = True
+debug = False
 
 ## Engine
 engine = InferenceEngine(rules.get_rules())
@@ -79,9 +79,6 @@ for tif in tif_files[:]:
     # write output_shapes for results
     # geojson.write(bn, engine.vertex_locations, bn_evidences)
     #
-    # with open("evidences.json", 'w') as outfile:
-    #     json.dump(engine.vertex_locations, outfile)
-
 
 with open('evidences.pkl', 'wb') as output:
     pickle.dump(evidences, output, pickle.HIGHEST_PROTOCOL)

@@ -13,7 +13,7 @@ class PeopleEvidence:
 
 
     def get_evidences(self, frame):
-        people_points = self.people_detector.detect(frame)
+        people_points = self.people_detector.detect(frame, degree=30)
 
         evidences = []
         # True evidences
