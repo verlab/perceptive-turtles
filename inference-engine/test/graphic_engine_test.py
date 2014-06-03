@@ -55,7 +55,7 @@ cdr = QueryRule('Community', 'Community in Danger', ["true", "false"], human_dan
                 joint_functions.mean)
 # Grid rule
 human_gridr = GridRule("Human", "Human_Sensor", ["true", "false"],
-                       ["true", "false"], human_cprob, human_sensor_cprob, Grid(0, 0, 10, 20, 30, 60))
+                       ["true", "false"], human_cprob, human_sensor_cprob, Grid(0, 0, 30, 60, 3, 7))
 
 
 # Create engine

@@ -1,12 +1,12 @@
 from infengine.rules.Rule import Rule
-
+import numpy as np
 
 class Grid(object):
     """
     Map grid representation
     """
 
-    def __init__(self, tx, ty, dx, dy, width, height):
+    def __init__(self, tx, ty, width, height, cols, rows):
         """
         :param tx: translation in x.
         :param ty: translation in y
@@ -16,8 +16,8 @@ class Grid(object):
 
         self.height = height
         self.width = width
-        self.dy = dy
-        self.dx = dx
+        self.dy = height / (1.0 * rows)
+        self.dx = width / (1.0 * cols)
         self.ty = ty
         self.tx = tx
 
@@ -67,7 +67,7 @@ class GridRule(Rule):
                 query_nodes.append(vname)
 
         ### Create an empty grid
-        nodes_in_grid = [[[] for x in range(g.tx, g.tx + g.width, g.dx)] for y in range(g.ty, g.ty + g.height, g.dy)]
+        nodes_in_grid = [[[] for x in np.arange(g.tx, g.tx + g.width, g.dx)] for y in np.arange(g.ty, g.ty + g.height, g.dy)]
 
         # Put query nodes in grid
         for qn in query_nodes:
