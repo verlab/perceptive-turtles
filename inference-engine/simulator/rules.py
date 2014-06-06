@@ -8,7 +8,7 @@ COMMUNITY_RADIO = 0.000018006862307153121620199864860722982484730891883373260498
 HUMAN_RADIO = 0.0000270102934607296824302997972910844737270963378250598907470703125000
 
 
-def get_rules(human_tt, human_tf, fire_tt, fire_tf):
+def get_rules(human_tt, human_tf, fire_tt, fire_tf, grid):
     fire_sensor_cprob = {
         "['true']": [fire_tt, 1-fire_tt],
         "['false']": [1-fire_tf, fire_tf],
@@ -41,7 +41,7 @@ def get_rules(human_tt, human_tf, fire_tt, fire_tf):
     human_er = GridRule("Human", "Human_Sensor", ["true", "false"],
                         ["true", "false"], human_cprob, human_sensor_cprob,
                         #Grid(-43.9593, -19.8699, 0.0002, 0.0001, 20, 10))
-                        Grid(0, 0, 100, 200, 20, 20))
+                        grid)
 
     # Query Rules
     qr = QueryRule('Human', 'Human in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"],
