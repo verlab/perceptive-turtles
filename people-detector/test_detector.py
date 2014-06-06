@@ -6,9 +6,9 @@ from people_detector import PeopleDetector
 def run():
     detector = PeopleDetector()
 
-    frame = cv2.imread("44.png")
+    frame = cv2.imread("9.png")
 
-    detected_points = detector.detect(frame, debug=True)
+    detected_points = detector.detect(frame, debug=True, degree=10)
 
     # Extend to rectangle
     for p in detected_points:

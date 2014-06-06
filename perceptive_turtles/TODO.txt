@@ -2,8 +2,9 @@
 
 
 --- Experiments --
+* Kernel density and heat map.
 * Latent SVM
-* Simulator
+* Simulator - validar.
 * Generate the resultant raster. (show gradients)
 
 
