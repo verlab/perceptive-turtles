@@ -1,5 +1,7 @@
-from infengine.rules.Rule import Rule
 import numpy as np
+
+from infengine.rules.Rule import Rule
+
 
 class Grid(object):
     """
@@ -67,21 +69,26 @@ class GridRule(Rule):
                 query_nodes.append(vname)
 
         ### Create an empty grid
-        nodes_in_grid = [[[] for x in np.arange(g.tx, g.tx + g.width, g.dx)] for y in np.arange(g.ty, g.ty + g.height, g.dy)]
+        nodes_in_grid = [[[] for x in np.arange(g.tx, g.tx + g.width, g.dx)] for y in
+                         np.arange(g.ty, g.ty + g.height, g.dy)]
 
         # Put query nodes in grid
         for qn in query_nodes:
             x, y = vertex_locations[qn]
 
-            j = int((x - g.tx) / g.dx)
             i = int((y - g.ty) / g.dy)
+            j = int((x - g.tx) / g.dx)
+
+            if len(nodes_in_grid) <= i or i < 0 or len(nodes_in_grid[0]) <= j or j < 0:
+                print "point out of range ", qn
+                continue
 
             nodes_in_grid[i][j].append(qn)
 
         ## for each cell in grid, create an inference node
         for i, row in enumerate(nodes_in_grid):
             for j, cell in enumerate(row):
-                parent_location = [g.tx + j * g.dx * 0.5, g.ty + i * g.dy * 0.5]
+                parent_location = [g.tx + (j + 0.5) * g.dx, g.ty + (i + 0.5) * g.dy]
                 # Parent name
                 parent_name = "'" + self.cause_var + "' " + str(parent_location)
 

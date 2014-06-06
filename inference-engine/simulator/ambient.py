@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Ambient(object):
-    def __init__(self, n_people=10, n_fire=5, distance_danger=2, map_size=[100, 100]):
+    def __init__(self, n_people=10, n_fire=5, distance_danger=2, map_size=[100, 200]):
         self.map_size = map_size
         self.distance_danger = distance_danger
         self.n_fire = n_fire
