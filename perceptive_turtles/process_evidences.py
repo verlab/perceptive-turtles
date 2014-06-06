@@ -4,7 +4,7 @@ from gi.repository import Gtk
 from infengine.InferenceEngine import InferenceEngine
 from infengine.gis import geojson
 from lib_sallybn.disc_bayes_net.BoxDiscreteBN import BoxDiscreteBN, Mode
-import rules
+import rules2 as rules
 
 
 with open('evidences.pkl', 'rb') as evidence_input:

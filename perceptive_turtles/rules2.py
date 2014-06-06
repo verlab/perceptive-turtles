@@ -40,7 +40,8 @@ def get_rules():
                            ["true", "false"], fire_cprob, fire_sensor_cprob)
     human_er = GridRule("Human", "Human_Sensor", ["true", "false"],
                         ["true", "false"], human_cprob, human_sensor_cprob,
-                        Grid(-43.9593, -19.8699, 0.0002, 0.0001, 20, 10))
+                        #Grid(-43.9593, -19.8699, 0.0002, 0.0001, 20, 10))
+                        Grid(-43.95928, -19.86990, 0.00015, 0.00015, 10, 10))
 
     # Query Rules
     qr = QueryRule('Human', 'Human in Danger', ["true", "false"], human_danger_cprob, "Fire", ["true", "false"],

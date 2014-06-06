@@ -1,0 +1,21 @@
+
+
+
+--- Experiments --
+* Latent SVM
+* Simulator
+* Generate the resultant raster. (show gradients)
+
+
+-- Article --
+* Describe the grid rule.
+
+
+-- Done --
+
+
+
+
+
+
+
