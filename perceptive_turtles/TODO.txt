@@ -6,6 +6,8 @@
 * Latent SVM
 * Simulator - validar.
 * Generate the resultant raster. (show gradients)
+- barra
+
 
 
 -- Article --
