@@ -19,6 +19,7 @@ human_tt = 0.999
 human_tf = 0.999
 fire_tt = 0.999
 fire_tf = 0.999
+map = Grid(0, 0, 100, 200, 20, 20)
 
 ambient = Ambient(map_size=[100, 200], n_people=20, n_fire=5, distance_danger=2)
 evidences = []
@@ -72,21 +73,33 @@ plt.show()
 
 # Run engine
 # Engine
-engine = InferenceEngine(rules.get_rules(human_tt, human_tf, fire_tt, fire_tf))
+engine = InferenceEngine(rules.get_rules(human_tt, human_tf, fire_tt, fire_tf, map))
 
 # create bayesian network
 bn, bn_evidences = engine.infer_bn(evidences)
 
-window = Gtk.Window()
-window.set_size_request(800, 600)
+# window = Gtk.Window()
+# window.set_size_request(800, 600)
+#
+# box = BoxDiscreteBN(window, disc_bn=bn)
+# box.evidences = bn_evidences
+# box.organize_graph(random=False)
+# box.set_mode(Mode.edit_vertex)
+#
+# window.add(box)
+# window.show_all()
+#
+# window.connect("delete-event", Gtk.main_quit)
+# Gtk.main()
 
-box = BoxDiscreteBN(window, disc_bn=bn)
-box.evidences = bn_evidences
-box.organize_graph(random=False)
-box.set_mode(Mode.edit_vertex)
+### Resultant human grid.
+rhg = [[[] for x in np.arange(map.tx, map.tx + map.width, map.dx)] for y in
+                 np.arange(map.ty, map.ty + map.height, map.dy)]
 
-window.add(box)
-window.show_all()
+for v in bn.V:
+    var_name = v.split("'")[1]
 
-window.connect("delete-event", Gtk.main_quit)
-Gtk.main()
+    if var_name != 'Human':
+        continue
+
+    loc = engine.vertex_locations[v]
