@@ -80,7 +80,7 @@ class GridRule(Rule):
             j = int((x - g.tx) / g.dx)
 
             if len(nodes_in_grid) <= i or i < 0 or len(nodes_in_grid[0]) <= j or j < 0:
-                print "point out of range ", qn
+                # print "point out of range ", qn
                 continue
 
             nodes_in_grid[i][j].append(qn)

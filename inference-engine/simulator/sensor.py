@@ -17,11 +17,11 @@ class Sensor(object):
         false_samples = samples - true_samples
 
         # True positives
-        n_tt = int(self.tt * true_samples)
+        n_tt = round(self.tt * true_samples)
         # False positives
         n_ft = true_samples - n_tt
         # True negatives
-        n_tn = int(self.ff * false_samples)
+        n_tn = round(self.ff * false_samples)
         # False negatives
         n_fn = false_samples - n_tn
 

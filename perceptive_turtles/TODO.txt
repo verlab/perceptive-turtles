@@ -9,6 +9,16 @@
 - barra
 
 
+----- Graphics ---
+- Variar quantidade de humanos
+- Tamanho do mapa
+- Quantidade de leituras
+- Qualidade do sensor
+- Quantidade de sensores
+- Diferentes typo de sensores
+- Grid, resolucao e o tempo de execucao.
+
+- Quantidade de fogo no ambiente.
 
 -- Article --
 * Describe the grid rule.
