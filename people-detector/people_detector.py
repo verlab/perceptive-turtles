@@ -90,9 +90,7 @@ class PeopleDetector(object):
         # Rotate image
         image_list = self.rotate_image(img, degree)
 
-        rows, cols = img.shape[0], img.shape[1]
-
-        detected_points = []
+        detected_pols = []
         # For each rotated image
         for image, rotation_matrix in image_list:
             # Run HOG
@@ -104,29 +102,26 @@ class PeopleDetector(object):
                 cv2.imshow("test", image)
                 cv2.waitKey(0)
 
+            # Inverted matrix
+            inv_mat = cv2.invertAffineTransform(rotation_matrix)
+
             # For each detected person
             for x, y, w, h in detected_rectangles:
-                px = x + w / 2
-                py = y + h / 2
 
                 # WARNING: size of the person is known a priori
                 if w < min_size:
                     continue
 
                 # transform
-                inv_mat = cv2.invertAffineTransform(rotation_matrix)
                 # transformed_point
-                tp = inv_mat.dot(np.array([px, py, 1]))
+                p1 = inv_mat.dot(np.array([x, y, 1])).tolist()
+                p2 = inv_mat.dot(np.array([x + w, y, 1])).tolist()
+                p3 = inv_mat.dot(np.array([x + w, y + h, 1])).tolist()
+                p4 = inv_mat.dot(np.array([x, y + h, 1])).tolist()
 
-                ## adjust center
-                r_rows, r_cols = image.shape[0], image.shape[1]
-                diff_cx = (r_cols - cols) / 2.0
-                diff_cy = (r_rows - rows) / 2.0
-                tp[0] -= diff_cx
-                tp[1] -= diff_cy
-
+                polygon = [p1, p2, p3, p4]
 
                 # Add to the list
-                detected_points.append(tp.tolist())
+                detected_pols.append(polygon)
 
-        return detected_points
+        return detected_pols

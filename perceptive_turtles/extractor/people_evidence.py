@@ -13,21 +13,21 @@ class PeopleEvidence:
 
 
     def get_evidences(self, frame):
-        people_points = self.people_detector.detect(frame, degree=30)
+        people_squares = self.people_detector.detect(frame, degree=30)
 
         evidences = []
-        # True evidences
-        for pp in people_points:
-            # create evidence
-            ev = Evidence(pp[0], pp[1], PEOPLE_SENSOR, BOOLEAN_STATES, BOOLEAN_STATES[0])
+        # Square to evidence
+        true_evidences = [Evidence(square, PEOPLE_SENSOR, BOOLEAN_STATES, BOOLEAN_STATES[0])
+                          for square in people_squares]
 
-            # add evidence
-            evidences.append(ev)
 
-        # False evidence
-        if not people_points:
+        # TODO false evidence for area of the image without true_evidence polygon.
+        # False evidence when no detections
+        if not people_squares:
             rows, cols = frame.shape[0], frame.shape[1]
-            ev = Evidence(cols / 2.0, rows / 2.0, PEOPLE_SENSOR, BOOLEAN_STATES, BOOLEAN_STATES[1])
+
+            pol = [[0, 0], [rows, 0], [rows, cols], [0, rows]]
+            ev = Evidence(pol, PEOPLE_SENSOR, BOOLEAN_STATES, BOOLEAN_STATES[1])
             evidences.append(ev)
 
-        return evidences
+        return true_evidences + evidences

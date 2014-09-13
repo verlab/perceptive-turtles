@@ -51,8 +51,8 @@ for tif in tif_files[:]:
     people_evidences = people.get_evidences(frame)
     # people_evidences=[]
     ### Detect fire
-    fire_evidences = fire.get_evidences(frame)
-    # fire_evidences=[]
+    # fire_evidences = fire.get_evidences(frame)
+    fire_evidences=[]
     new_evidences = people_evidences + fire_evidences
 
     if debug:
@@ -71,10 +71,11 @@ for tif in tif_files[:]:
         cv2.imshow(tif, frame)
         cv2.waitKey(0)
 
-    # transform to geoposition
-    geotransformer.geo_transform(new_evidences, tif)
-
-    evidences += new_evidences
+    # transform to geo-transform
+    for e in new_evidences:
+        geotransformer.geo_transform(e.polygon, tif)
+    #
+    # evidences += new_evidences
 
     # write output_shapes for results
     # geojson.write(bn, engine.vertex_locations, bn_evidences)
