@@ -3,7 +3,7 @@ from people_detector import PeopleDetector
 
 
 PEOPLE_SENSOR = "Human_Sensor"
-BOOLEAN_STATES = ["true", "false"]
+BOOLEAN_STATES = ["false", "true"]
 
 
 class PeopleEvidence:
@@ -12,22 +12,17 @@ class PeopleEvidence:
         self.people_detector = PeopleDetector()
 
 
-    def get_evidences(self, frame):
+    def get_evidence(self, frame):
         people_squares = self.people_detector.detect(frame, degree=30)
 
-        evidences = []
+        rows, cols = frame.shape[0], frame.shape[1]
+        boundary = [[0, 0], [rows, 0], [rows, cols], [0, rows]]
+
+        evidence = Evidence(boundary, PEOPLE_SENSOR, BOOLEAN_STATES, BOOLEAN_STATES[0])
+
+
         # Square to evidence
-        true_evidences = [Evidence(square, PEOPLE_SENSOR, BOOLEAN_STATES, BOOLEAN_STATES[0])
-                          for square in people_squares]
+        for square in people_squares:
+            evidence.add_detection(BOOLEAN_STATES[1], square)
 
-
-        # TODO false evidence for area of the image without true_evidence polygon.
-        # False evidence when no detections
-        if not people_squares:
-            rows, cols = frame.shape[0], frame.shape[1]
-
-            pol = [[0, 0], [rows, 0], [rows, cols], [0, rows]]
-            ev = Evidence(pol, PEOPLE_SENSOR, BOOLEAN_STATES, BOOLEAN_STATES[1])
-            evidences.append(ev)
-
-        return true_evidences + evidences
+        return evidence

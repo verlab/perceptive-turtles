@@ -1,17 +1,31 @@
-
-
 class Evidence:
-    def __init__(self, polygon, var, var_states, evidence_state):
+    def __init__(self, boundary, variable_name, var_states, default_state):
         """
 
-        :param polygon: area where the evince occurred.
-        :param var: variable.
+
+        :param boundary: polygon of the boundary.
+        :param default_state:
+        :param variable_name: variable.
         :param var_states: states of the variable.
-        :param evidence_state: state of the variable.
         """
-        self.polygon = polygon
-        self.var = var
+        self.default_state = default_state
+        self.var = variable_name
         self.var_states = var_states
-        self.evidence_state = evidence_state
+        self.boundary = boundary
+        # Dictionary {state: [polygons]}
+        self.detections = {}
+
+
+    def add_detection(self, state, polygon):
+        """
+        Add to detections dictionary: {state: [polygons]}
+        :param state:
+        :param polygon:
+        """
+        if not state in self.detections:
+            self.detections[state] = []
+
+        self.detections[state].append(polygon)
+
 
 

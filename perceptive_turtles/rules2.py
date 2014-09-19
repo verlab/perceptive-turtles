@@ -34,7 +34,6 @@ def get_rules():
         "['false', 'false']": [.01, .99]
     }
 
-
     # Evidence Rules
     fire_er = EvidenceRule("Fire", "Fire_Sensor", ["true", "false"],
                            ["true", "false"], fire_cprob, fire_sensor_cprob)
