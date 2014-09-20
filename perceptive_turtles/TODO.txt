@@ -1,4 +1,32 @@
+-definicao do problema
+- trabalhos relacionados
+- metodologia do motor de inferencia
+- experimentos
+- definir metrica
 
+- definir fatores
+	- numero de imagens.
+	- numero de sensores.
+	- confiabilidade dos sensores.
+- Introducao
+- conclucao
+- abstract.
+
+
+Imeplementacao
+	- saida do fogo em poligono.
+	- poligonos em grid.
+	- regras:
+		- community sai.
+		- affinity sai.
+		- evidence -> grid: pega as amostras numa celular y aplica a regra.
+		- community?
+
+
+
+Titulo: Detecting Latent regions
+
+---------------------------------------------------
 
 
 --- Experiments --
