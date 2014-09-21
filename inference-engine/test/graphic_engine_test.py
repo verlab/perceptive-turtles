@@ -1,7 +1,7 @@
 from gi.repository import Gtk
 
 from infengine import joint_functions
-from infengine.Evidence import Evidence
+from infengine.observation import Observation
 from infengine.InferenceEngine import InferenceEngine
 from infengine.rules.GridRule import GridRule, Grid
 from infengine.rules.CommunityRule import CommunityRule
@@ -64,14 +64,14 @@ engine = InferenceEngine([human_gridr])
 
 
 ##### EVIDENCE
-ef1 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
-ef2 = Evidence(19, 30, "Fire_Sensor", ["true", "false"], "false")
+ef1 = Observation(10, 30, "Fire_Sensor", ["true", "false"], "true")
+ef2 = Observation(19, 30, "Fire_Sensor", ["true", "false"], "false")
 
-eh1 = Evidence(10.0, 20.0, "Human_Sensor", ["true", "false"], "true")
-eh2 = Evidence(5, 19, "Human_Sensor", ["true", "false"], "false")
-eh3 = Evidence(15, 18, "Human_Sensor", ["true", "false"], "true")
-eh4 = Evidence(16, 17, "Human_Sensor", ["true", "false"], "true")
-eh5 = Evidence(-124.4577, 108.0135, "Human_Sensor", ["true", "false"], "true")
+eh1 = Observation(10.0, 20.0, "Human_Sensor", ["true", "false"], "true")
+eh2 = Observation(5, 19, "Human_Sensor", ["true", "false"], "false")
+eh3 = Observation(15, 18, "Human_Sensor", ["true", "false"], "true")
+eh4 = Observation(16, 17, "Human_Sensor", ["true", "false"], "true")
+eh5 = Observation(-124.4577, 108.0135, "Human_Sensor", ["true", "false"], "true")
 
 # bn, bn_evidences = engine.infer_bn([eh2, eh3, eh4, eh1, eh5, ])
 bn, bn_evidences = engine.infer_bn([eh1, eh2, eh3, eh4])

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from infengine.rules.GridRule import Grid
-from infengine.Evidence import Evidence
+from infengine.observation import Observation
 from infengine.InferenceEngine import InferenceEngine
 from simulator import rules
 from simulator.ambient import Ambient
@@ -19,11 +19,11 @@ def add_evidences(true_points, false_points, sensor, evidences):
     """ Points to evidences
     """
     for tp in true_points:
-        ev = Evidence(tp[0], tp[1], sensor, BOOLEAN_STATES, BOOLEAN_STATES[0])
+        ev = Observation(tp[0], tp[1], sensor, BOOLEAN_STATES, BOOLEAN_STATES[0])
         evidences.append(ev)
 
     for tp in false_points:
-        ev = Evidence(tp[0], tp[1], sensor, BOOLEAN_STATES, BOOLEAN_STATES[1])
+        ev = Observation(tp[0], tp[1], sensor, BOOLEAN_STATES, BOOLEAN_STATES[1])
         evidences.append(ev)
 
 

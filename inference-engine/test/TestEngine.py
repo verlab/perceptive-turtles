@@ -3,7 +3,7 @@ import unittest
 from infengine.InferenceEngine import InferenceEngine
 from infengine.rules.EvidenceRule import EvidenceRule
 from infengine.rules.QueryRule import QueryRule
-from infengine.Evidence import Evidence
+from infengine.observation import Observation
 from infengine import joint_functions
 
 fire_sensor_cprob = {
@@ -35,7 +35,7 @@ class TestEngine(unittest.TestCase):
         engine = InferenceEngine(erules, [])
 
         # Evidence
-        e1 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
+        e1 = Observation(10, 30, "Fire_Sensor", ["true", "false"], "true")
 
         # run inference engine
         bn, bn_evidences = engine.infer_bn([e1])
@@ -44,7 +44,7 @@ class TestEngine(unittest.TestCase):
         self.assertEqual(len(bn.V), 2)
 
         # Another evidence
-        e2 = Evidence(50, 30, "Fire_Sensor", ["true", "false"], "true")
+        e2 = Observation(50, 30, "Fire_Sensor", ["true", "false"], "true")
         # run inference engine
         bn, bn_evidences = engine.infer_bn([e1, e2])
 
@@ -52,7 +52,7 @@ class TestEngine(unittest.TestCase):
         self.assertEqual(len(bn.V), 4)
 
         # Another evidence in the same location of e1
-        e3 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
+        e3 = Observation(10, 30, "Fire_Sensor", ["true", "false"], "true")
         # run inference engine
         bn, bn_evidences = engine.infer_bn([e1, e2, e3])
         # Validate result
@@ -75,8 +75,8 @@ class TestEngine(unittest.TestCase):
 
 
         ##### EVIDENCE
-        e1 = Evidence(10, 30, "Fire_Sensor", ["true", "false"], "true")
-        e2 = Evidence(10, 30, "Human_Sensor", ["true", "false"], "true")
+        e1 = Observation(10, 30, "Fire_Sensor", ["true", "false"], "true")
+        e2 = Observation(10, 30, "Human_Sensor", ["true", "false"], "true")
 
         # bn, bn_evidences = engine.infer_bn([e1, e2])
         #
@@ -84,7 +84,7 @@ class TestEngine(unittest.TestCase):
         # self.assertEqual(len(bn.V), 6, "number of vertices in query rule")
         # self.assertEqual(len(bn.E), 4, "number of edges for query rule")
 
-        e3 = Evidence(12, 30, "Fire_Sensor", ["true", "false"], "true")
+        e3 = Observation(12, 30, "Fire_Sensor", ["true", "false"], "true")
         bn, bn_evidences = engine.infer_bn([e1, e2, e3])
 
         # Validate result
